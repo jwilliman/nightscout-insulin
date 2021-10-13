@@ -14,13 +14,14 @@ api_call <- function(
   url = NULL,
   start_date    = NULL,
   end_date      = NULL,
-  treat_count   = 100,
+  treat_count   = 3000,
   profile_count = 50) {
   
   params <- list(
     treatments = paste0(
       "?find[created_at][$gte]=", start_date, 
-      "&find[created_at][$lte]=", end_date),
+      "&find[created_at][$lte]=", end_date,
+      "&count=", treat_count),
     profile = paste0(
       "?count=", profile_count))
   

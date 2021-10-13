@@ -8,7 +8,7 @@ api_call(
   url = NULL,
   start_date = NULL,
   end_date = NULL,
-  treat_count = 100,
+  treat_count = 3000,
   profile_count = 50
 )
 }
