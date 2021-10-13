@@ -35,8 +35,6 @@ tidy_treats <- function(dat) {
 #' @examples
 bind_treats <- function(ls_treats) {
   
-  library(data.table)
-  
   dat_treat <- data.table::rbindlist(
     lapply(ls_treats, tidy_treats)
     , fill = TRUE, use.names = TRUE)
@@ -90,9 +88,6 @@ bind_treats <- function(ls_treats) {
 #' @examples
 tidy_profiles <- function(dat) {
   
-  library(data.table)
-  library(magrittr)
-  
   ## Drop empty levels
   do.call(
     cbind, Filter(nrow, list(
@@ -118,15 +113,15 @@ tidy_profiles <- function(dat) {
                 rbindlist(profile[[parm]], idcol = "id_time", fill = TRUE)
                 , simplify = FALSE)
               , idcol = "parameter", use.names = TRUE) %>% 
-              tidyr::nest(parm_set = one_of("id_time", "time", "value", "timeAsSeconds"))
+              tidytable::nest.(parm_set = one_of("id_time", "time", "value", "timeAsSeconds"))
             
           }, simplify = FALSE)
           , idcol = "profile", fill = TRUE, use.names = TRUE) %>% 
-          tidyr::nest(parameters = one_of("parameter", "parm_set"))
+          tidytable::nest.(parameters = one_of("parameter", "parm_set"))
         
         , by = "profile"
       ) %>% 
-        tidyr::nest(store = one_of(
+        tidytable::nest.(store = one_of(
           "profile", "dia", "carbs_hr", "delay", "timezone", "startDate", "parameters")
         )
     ))
@@ -152,17 +147,16 @@ bind_profiles <- function(ls_profiles) {
       , fill = TRUE, use.names = TRUE)
   )
   
-  dat_p1 <- tidytable::unnest.(dat_prof) %>% 
-    .[defaultProfile == profile] %>% 
-    tidytable::unnest.(parameters) %>% 
-    dcast(., ... ~ parameter, value.var = "parm_set")
+  dat_p1 <- tidytable::unnest.(dat_prof)[defaultProfile == profile]
+  dat_p2 <- tidytable::unnest.(dat_p1, parameters)
+  dat_p3 <- data.table::dcast(dat_p2, ... ~ parameter, value.var = "parm_set")
   
-  
-  dat_parms <- sapply(
-    c("basal", "carbratio", "sens", "target_high", "target_low"), function(x) 
-      tidytable::unnest.(dat_p1[, .(startDate, .SD), .SDcols = c(x)]),
-    simplify = FALSE) %>% 
-    rbindlist(idcol = "parameter")
+  dat_parms <- rbindlist(
+    sapply(
+      c("basal", "carbratio", "sens", "target_high", "target_low"), function(x) 
+        tidytable::unnest.(dat_p3[, .(startDate, .SD), .SDcols = c(x)]),
+      simplify = FALSE) 
+    , idcol = "parameter")
   
   dat_parms[, `:=` (
     startDate  = lubridate::with_tz(

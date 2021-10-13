@@ -9,8 +9,6 @@
 #' @examples
 calc_basal <- function(dat_profile, dat_treats) {
   
-  library(data.table)
-  
   dat_basal <- dat_profile[
     parameter == "basal", .(basal_insulin = sum(value_hr)), 
     by = .(startDate)][
@@ -179,6 +177,18 @@ bind_insulin <- function(basal_wide, bolus_wide) {
 
 # bind_insulin(dat_bolus$wide, dat_basal$wide)
 
+#' Extract data from Nightscout and prepare summary of insulin use
+#'
+#' @param url 
+#' @param start_date 
+#' @param end_date 
+#' @param treat_count 
+#' @param profile_count 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 calc_insulin <- function(
   url = NULL,
   start_date    = NULL,
@@ -195,7 +205,7 @@ calc_insulin <- function(
   dat_bolus    <- calc_bolus(dat_treats)
   dat_insulin  <- bind_insulin(dat_basal$wide, dat_bolus$wide)
   
-  retun(dat_insulin)
+  return(dat_insulin)
   
 }
   

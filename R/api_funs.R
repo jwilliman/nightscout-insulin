@@ -24,8 +24,9 @@ api_call <- function(
     profile = paste0(
       "?count=", profile_count))
   
-  calls <- lapply(names(params), function(x) 
+  calls <- sapply(names(params), function(x) 
     file.path(url, "api/v1", paste0(x, ".json", params[[x]]))
+    , simplify = FALSE
     )
   
   return(calls)
@@ -40,9 +41,9 @@ api_call <- function(
 #' @export
 #'
 #' @examples
-api_run <- function(api) {
+api_run <- function(api_url) {
   
-  resp <- httr::GET(api)
+  resp <- httr::GET(api_url)
   if (httr::http_type(resp) != "application/json") {
     stop("API did not return json", call. = FALSE)
   }
@@ -54,7 +55,7 @@ api_run <- function(api) {
     warning(
       sprintf(
         "GitHub API request failed [%s]\n%s\n<%s>", 
-        status_code(resp),
+        httr::status_code(resp),
         parsed$message,
         parsed$documentation_url
       ),
@@ -65,7 +66,7 @@ api_run <- function(api) {
   structure(
     list(
       content = parsed,
-      url = url_name,
+      url = api_url,
       response = resp
     ),
     class = "ns_api"

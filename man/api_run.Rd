@@ -4,7 +4,7 @@
 \alias{api_run}
 \title{Run API calls and retrieve data}
 \usage{
-api_run(api)
+api_run(api_url)
 }
 \arguments{
 \item{api}{the url/api call of the page to retrieve}
