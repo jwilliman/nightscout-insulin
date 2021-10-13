@@ -100,7 +100,12 @@ calc_basal <- function(dat_profile, dat_treats) {
 #' @examples
 calc_bolus <- function(dat_treats)  {
   
-  vct_bolus <- names(dat_treats)[names(dat_treats) %in% c("Meal Bolus", "Bolus Wizard")]
+  if(any(grepl("Combo", names(dat_treats)))) {
+    setnames(dat_treats$`Combo Bolus`, "enteredinsulin", "insulin")
+    dat_treats$`Combo Bolus`[, isSMB := FALSE]
+  }
+  
+  vct_bolus <- names(dat_treats)[grepl("Bolus", names(dat_treats))]
   
   dat_bolus <- rbindlist(lapply(vct_bolus, function(event)
     
