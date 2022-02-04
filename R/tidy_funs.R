@@ -17,7 +17,7 @@ vcts$parm    <- c("carbratio", "sens", "basal", "target_high", "target_low")
 #' @export
 #'
 #' @examples
-tidy_treats <- function(dat) {
+tidy_treats <- function(x) {
   
   # If event is a 'Bolus Wizard' then object has nested boluscalc information.
   if("boluscalc" %in% names(x)) {
