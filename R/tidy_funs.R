@@ -159,8 +159,8 @@ bind_profiles <- function(ls_profiles) {
       , fill = TRUE, use.names = TRUE)
   )
   
-  dat_p1 <- tidytable::unnest.(dat_prof)[defaultProfile == profile]
-  dat_p2 <- tidytable::unnest.(dat_p1, parameters)
+  dat_p1 <- tidytable::unnest.(dat_prof, names_sep = "_")[defaultProfile == store_profile]
+  dat_p2 <- tidytable::unnest.(dat_p1, store_parameters)
   dat_p3 <- data.table::dcast(dat_p2, ... ~ parameter, value.var = "parm_set")
   
   dat_parms <- rbindlist(
