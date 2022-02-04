@@ -74,12 +74,14 @@ bind_treats <- function(ls_treats) {
   
   ## Split treatments into list of data.tables by treatment type -----------------
   dat_treats <- split(dat_treat, by = "eventType")
+  ## Drop empty columns from new data.tables
   dat_treats <- lapply(dat_treats, function(dat) {
     dat[, which(colSums(!is.na(dat)) == 0) := NULL]
   })
   
-  for(dat in names(dat_treats[!names(dat_treats) == "Bolus Wizard"]))
-    dat_treats[[dat]][, boluscalc := NULL]
+  # Don't think the following is needed anymore. 
+  # for(dat in names(dat_treats[!names(dat_treats) == "Bolus Wizard"]))
+  #   dat_treats[[dat]][, boluscalc := NULL]
   
   return(dat_treats[])
   
