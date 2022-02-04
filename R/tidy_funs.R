@@ -19,10 +19,19 @@ vcts$parm    <- c("carbratio", "sens", "basal", "target_high", "target_low")
 #' @examples
 tidy_treats <- function(dat) {
   
-  cbind(
-    data.table::as.data.table(dat[!names(dat) %in% "boluscalc"]),
-    tidytable::nest_by.(as.data.table(dat[["boluscalc"]]), .key = "boluscalc")
-  )}
+  # If event is a 'Bolus Wizard' then object has nested boluscalc information.
+  if("boluscalc" %in% names(x)) {
+    d1 <- data.table::as.data.table(x[!names(x) %in% "boluscalc"])
+    d2a <- as.data.table(x[["boluscalc"]])
+    d2b <- tidytable::nest_by.(d2a, .key = "boluscalc")
+    d1$boluscalc <- d2b
+  } else {
+    d1 <- data.table::as.data.table(x)
+  }
+  
+  return(d1)
+  
+  }
 
 
 #' Tidy and combine a list of treatment json objects
