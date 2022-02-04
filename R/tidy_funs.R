@@ -73,9 +73,10 @@ bind_treats <- function(ls_treats) {
   
   
   ## Split treatments into list of data.tables by treatment type -----------------
-  dat_treats <- lapply(
-    split(dat_treat, by = "eventType"), janitor::remove_empty, which = "cols"
-  )
+  dat_treats <- split(dat_treat, by = "eventType")
+  dat_treats <- lapply(dat_treats, function(dat) {
+    dat[, which(colSums(!is.na(dat)) == 0) := NULL]
+  })
   
   for(dat in names(dat_treats[!names(dat_treats) == "Bolus Wizard"]))
     dat_treats[[dat]][, boluscalc := NULL]
