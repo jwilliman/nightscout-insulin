@@ -34,9 +34,23 @@ calc_basal <- function(dat_profile, dat_treats) {
   ## Determine temporary basal ---------------------------------------------------
   if("Temp Basal" %in% names(dat_treats)) {
     
-    dat_tb <- dat_treats$`Temp Basal`[
-      , .(datetime, date, eventType, duration, absolute, rate)][
-        order(datetime)]
+    # Add extra columns if missing
+    dat_tb0 <- data.table(
+      eventType = character(),
+      date = as.Date(character()),
+      datetime = as.POSIXct(character()),
+      pumpId = numeric(),
+      enteredBy = character(),
+      duration = integer(),
+      absolute = numeric(),
+      rate = numeric()
+    )
+    
+    # And drop those not needed.
+    dat_tb <- rbindlist(list(
+      dat_tb0, dat_treats$`Temp Basal`)
+      , fill = TRUE)[, .(datetime, date, eventType, duration, absolute, rate)][order(datetime)]
+    
     dat_tb[, time_elapse := (shift(datetime, n = 1L, type = "lead") - datetime)/60]
     dat_tb[, time_start := as.numeric(lubridate::force_tz(datetime, tzone = "UTC"))%%(60*60*24)]
     
