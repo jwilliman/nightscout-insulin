@@ -14,33 +14,42 @@ calc_basal <- function(dat_profile, dat_treats) {
     by = .(startDate)][
       , endDate := data.table::shift(startDate, fill = Sys.time(), type = "lead")]
   
+  ## Determine base basal --------------------------------------------------------
+  dat_b1 = merge(
+    unique(dat_treats$`Meal Bolus`[, .(k = 1, date)])
+    , merge(dat_profile[parameter == "basal", c(k = 1, .SD)]
+            , dat_basal[, startDate, endDate]
+            , by = "startDate")
+    , by = "k", allow.cartesian = TRUE)
+  
+  dat_b1[, `:=`(k, NULL)]
+  
+  dat_b2 <- dat_b1[
+    date >= as.Date(startDate) & date < as.Date(endDate)
+    , .(
+      date, datetime = as.POSIXct(paste(as.character(date), time), format = "%Y-%m-%d %H:%M"), 
+      time_start, absolute = value, base = value)]
+  
   
   ## Determine temporary basal ---------------------------------------------------
+  if("Temp Basal" %in% names(dat_treats)) {
+    
+    dat_tb <- dat_treats$`Temp Basal`[
+      , .(datetime, date, eventType, duration, absolute, rate)][
+        order(datetime)]
+    dat_tb[, time_elapse := (shift(datetime, n = 1L, type = "lead") - datetime)/60]
+    dat_tb[, time_start := as.numeric(lubridate::force_tz(datetime, tzone = "UTC"))%%(60*60*24)]
+    
+    dat_tb2 <- rbindlist(list(
+      base = dat_b2,
+      temp = dat_tb[, .(date, datetime, time_start, absolute)]), idcol = "type", 
+      fill = TRUE)[order(datetime)]
+    
+  } else {
+    dat_tb2 <- dat_b2[order(datetime)]
+  } 
   
-  dat_tb <- dat_treats$`Temp Basal`[
-    , .(datetime, date, eventType, duration, absolute, rate)][
-      order(datetime)]
-  dat_tb[, time_elapse := (shift(datetime, n = 1L, type = "lead") - datetime)/60]
-  dat_tb[, time_start := as.numeric(lubridate::force_tz(datetime, tzone = "UTC"))%%(60*60*24)]
-  
-  dat_tb2 <- rbindlist(list(
-    base = merge(
-      ## Days that subject was enrolled
-      unique(dat_treats$`Meal Bolus`[, .(k = 1, date)]),
-      merge(
-        dat_profile[parameter == "basal", c(k = 1, .SD)]
-        , dat_basal[, startDate, endDate], by = "startDate")
-      , by = "k", allow.cartesian = TRUE)[, k := NULL][
-        date >= as.Date(startDate) & date < as.Date(endDate), 
-        .(
-          date, 
-          datetime = as.POSIXct(paste(as.character(date), time), format = "%Y-%m-%d %H:%M"),
-          time_start, absolute = value, base = value)
-      ],
-    temp = dat_tb[, .(date, datetime, time_start, absolute)]
-  ), idcol = "type", fill = TRUE)[order(datetime)]
-  
-  
+  ## Tidy dataset
   dat_tb2[, base := nafill(base, "locf")]  
   dat_tb2[is.na(absolute), `:=` (
     type = "temp_end",
