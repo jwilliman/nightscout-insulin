@@ -60,7 +60,7 @@ bind_treats <- function(ls_treats) {
   
   for(col in cols_dates)
     set(dat_treat, j = col, value = lubridate::with_tz(lubridate::fast_strptime(
-      dat_treat[[col]], format = "%Y-%m-%dT%H:%M:%SZ", lt = FALSE)))
+      dat_treat[[col]], format = "%Y-%m-%dT%H:%M:%OSZ", lt = FALSE)))
   
   cols_mills <- c("date", "mills")
   
