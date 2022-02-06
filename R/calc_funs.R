@@ -128,17 +128,15 @@ calc_bolus <- function(dat_treats)  {
     dat_treats$`Combo Bolus`[, isSMB := FALSE]
   }
   
+  ## Combine different types of boluses
   vct_bolus <- names(dat_treats)[grepl("Bolus", names(dat_treats))]
   
-  dat_bolus <- rbindlist(lapply(vct_bolus, function(event)
-    
-    dat_treats[[event]][
-      !is.na(insulin)
-      , .(datetime, date, 
-          eventType, insulin, isSMB)]
-    
-  ))[order(datetime)]
+  dat_bolus <- rbindlist(
+    lapply(vct_bolus, function(event) dat_treats[[event]]), fill = TRUE)
   
+  dat_bolus <- dat_bolus[
+    !is.na(insulin)
+    , .(datetime, date, eventType, insulin, isSMB)][order(datetime)]
   
   dat_bolus_long <- data.table::groupingsets(
     dat_bolus[
