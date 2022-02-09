@@ -231,8 +231,11 @@ calc_insulin <- function(
   dat_bolus    <- calc_bolus(dat_treats)
   dat_insulin  <- bind_insulin(dat_basal$wide, dat_bolus$wide)
   
-  return(dat_insulin)
-  
+  return(list(
+    profiles   = dat_profiles,
+    treatments = dat_treats,
+    insulin    = dat_insulin)
+  )
 }
   
   
