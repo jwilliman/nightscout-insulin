@@ -9,9 +9,6 @@ bind_profiles(ls_profiles)
 \arguments{
 \item{ls_profiles}{}
 }
-\value{
-
-}
 \description{
 Tidy and combine a list of profiles json objects
 }

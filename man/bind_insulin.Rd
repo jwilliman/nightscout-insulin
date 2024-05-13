@@ -11,9 +11,6 @@ bind_insulin(basal_wide, bolus_wide)
 
 \item{bolus_wide}{}
 }
-\value{
-
-}
 \description{
 Combine insulin basal and bolus
 }

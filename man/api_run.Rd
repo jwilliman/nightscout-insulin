@@ -9,9 +9,6 @@ api_run(api_url)
 \arguments{
 \item{api}{the url/api call of the page to retrieve}
 }
-\value{
-
-}
 \description{
 Run API calls and retrieve data
 }

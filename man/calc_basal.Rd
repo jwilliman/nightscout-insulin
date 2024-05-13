@@ -11,9 +11,6 @@ calc_basal(dat_profile, dat_treats)
 
 \item{dat_treats}{}
 }
-\value{
-
-}
 \description{
 Calculate insulin basal rates
 }

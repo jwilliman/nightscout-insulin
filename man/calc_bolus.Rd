@@ -9,9 +9,6 @@ calc_bolus(dat_treats)
 \arguments{
 \item{dat_treats}{}
 }
-\value{
-
-}
 \description{
 Calculate insulin boluses
 }

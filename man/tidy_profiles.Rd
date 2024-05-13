@@ -9,9 +9,6 @@ tidy_profiles(dat)
 \arguments{
 \item{dat}{}
 }
-\value{
-
-}
 \description{
 Tidy raw profile json data
 }

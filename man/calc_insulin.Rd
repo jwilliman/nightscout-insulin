@@ -23,9 +23,6 @@ calc_insulin(
 
 \item{profile_count}{}
 }
-\value{
-
-}
 \description{
 Extract data from Nightscout and prepare summary of insulin use
 }

@@ -9,9 +9,6 @@ bind_treats(ls_treats)
 \arguments{
 \item{ls_treats}{}
 }
-\value{
-
-}
 \description{
 Tidy and combine a list of treatment json objects
 }

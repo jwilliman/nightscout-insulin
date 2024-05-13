@@ -4,13 +4,10 @@
 \alias{tidy_treats}
 \title{Tidy single nightscout treatments json object to data.table}
 \usage{
-tidy_treats(dat)
+tidy_treats(x)
 }
 \arguments{
 \item{dat}{}
-}
-\value{
-
 }
 \description{
 Tidy single nightscout treatments json object to data.table

@@ -23,9 +23,6 @@ api_call(
 
 \item{profile_count}{The maximum number of profiles to be retrieved}
 }
-\value{
-
-}
 \description{
 Create API calls
 }

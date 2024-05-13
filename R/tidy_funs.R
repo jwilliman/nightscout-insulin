@@ -11,10 +11,8 @@ vcts$parm    <- c("carbratio", "sens", "basal", "target_high", "target_low")
 
 #' Tidy single nightscout treatments json object to data.table
 #'
-#' @param dat 
+#' @param x json object of schema treatments 
 #'
-#' @return
-#' @export
 #'
 #' @examples
 tidy_treats <- function(x) {
@@ -23,7 +21,7 @@ tidy_treats <- function(x) {
   if("boluscalc" %in% names(x)) {
     d1 <- data.table::as.data.table(x[!names(x) %in% "boluscalc"])
     d2a <- as.data.table(x[["boluscalc"]])
-    d2b <- tidytable::nest_by.(d2a, .key = "boluscalc")
+    d2b <- tidytable::nest_by(d2a, .key = "boluscalc")
     d1$boluscalc <- d2b
   } else {
     d1 <- data.table::as.data.table(x)
@@ -36,7 +34,7 @@ tidy_treats <- function(x) {
 
 #' Tidy and combine a list of treatment json objects
 #'
-#' @param ls_treats 
+#' @param ls_treats List of treatments retrieved as json objects
 #'
 #' @return
 #' @export
@@ -95,8 +93,6 @@ bind_treats <- function(ls_treats) {
 #'
 #' @param dat 
 #'
-#' @return
-#' @export
 #'
 #' @examples
 tidy_profiles <- function(dat) {
@@ -126,15 +122,15 @@ tidy_profiles <- function(dat) {
                 rbindlist(profile[[parm]], idcol = "id_time", fill = TRUE)
                 , simplify = FALSE)
               , idcol = "parameter", use.names = TRUE) %>% 
-              tidytable::nest.(parm_set = one_of("id_time", "time", "value", "timeAsSeconds"))
+              tidytable::nest(parm_set = one_of("id_time", "time", "value", "timeAsSeconds"))
             
           }, simplify = FALSE)
           , idcol = "profile", fill = TRUE, use.names = TRUE) %>% 
-          tidytable::nest.(parameters = one_of("parameter", "parm_set"))
+          tidytable::nest(parameters = one_of("parameter", "parm_set"))
         
         , by = "profile"
       ) %>% 
-        tidytable::nest.(store = one_of(
+        tidytable::nest(store = one_of(
           "profile", "dia", "carbs_hr", "delay", "timezone", "startDate", "parameters")
         )
     ))
@@ -160,14 +156,14 @@ bind_profiles <- function(ls_profiles) {
       , fill = TRUE, use.names = TRUE)
   )
   
-  dat_p1 <- tidytable::unnest.(dat_prof, names_sep = "_")[defaultProfile == store_profile]
-  dat_p2 <- tidytable::unnest.(dat_p1, store_parameters)
+  dat_p1 <- tidytable::unnest(dat_prof, names_sep = "_")[defaultProfile == store_profile]
+  dat_p2 <- tidytable::unnest(dat_p1, store_parameters)
   dat_p3 <- data.table::dcast(dat_p2, ... ~ parameter, value.var = "parm_set")
   
   dat_parms <- rbindlist(
     sapply(
       c("basal", "carbratio", "sens", "target_high", "target_low"), function(x) 
-        tidytable::unnest.(dat_p3[, .(startDate, .SD), .SDcols = c(x)]),
+        tidytable::unnest(dat_p3[, .(startDate, .SD), .SDcols = c(x)]),
       simplify = FALSE) 
     , idcol = "parameter")
   
