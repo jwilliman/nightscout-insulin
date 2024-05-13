@@ -7,7 +7,7 @@
 tidy_treats(x)
 }
 \arguments{
-\item{dat}{}
+\item{x}{json object of schema treatments}
 }
 \description{
 Tidy single nightscout treatments json object to data.table

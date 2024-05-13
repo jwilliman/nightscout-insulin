@@ -1,4 +1,4 @@
-#' Convenience function for creating request query
+#' @title Convenience function for creating request query
 #'
 #' @param x An orderable vector, i.e., those with relevant methods for `<=`, usually a date field.
 #' @param lower Lower range bound of length 1. Will be coerced to character if not already.
@@ -6,6 +6,7 @@
 #' @param inc.bounds `TRUE` (default) means inclusive bounds, i.e., [lower,upper]. `FALSE` means exclusive bounds, i.e., (lower,upper).
 #'
 #' @return  A list of maximum length 2, with expressions to use in later functions like `make_request`.
+#' @export
 #'
 #' @examples
 find_between <- function(x = "dateString", lower = NULL, upper = NULL, inc.bounds = TRUE) {
@@ -23,7 +24,7 @@ find_between <- function(x = "dateString", lower = NULL, upper = NULL, inc.bound
 
 
 
-#' Create single API request to retrieve data from Nightscout
+#' @title Create single API request to retrieve data from Nightscout
 #'
 #' @param url Base URL for accessing Nightscout of type `https://YOUR-SITE.com`. See https://nightscout-test.readthedocs.io/en/latest/Nightscout/EN/Technical%20info/api.html for further details. `ap/i/v1` is automatically added to the end of the base url when creating the request.
 #' @param api_secret API secret or token as entered when accessing the base URL via a web browser. This API secret is hashed using Secure Hash Algorithm 1 prior to appending to header of API request.
@@ -35,6 +36,7 @@ find_between <- function(x = "dateString", lower = NULL, upper = NULL, inc.bound
 #'
 #' @return An HTTP response: an S3 list with class httr2_request.
 #' @import httr2
+#' @export
 #'
 #' @examples
 #' make_request(url = "http://localhost.1337, schema = "entries", spec = "sgv", count = 100)
@@ -75,7 +77,7 @@ make_request <- function(url = NULL, api_secret = NULL, schema = "entries", spec
 }
 
 
-#' Create multiple API request to retrieve data from Nightscout
+#' @title Create multiple API request to retrieve data from Nightscout
 #'
 #' @param url Base URL for accessing Nightscout of type `https://YOUR-SITE.com`. See https://nightscout-test.readthedocs.io/en/latest/Nightscout/EN/Technical%20info/api.html for further details. `ap/i/v1` is automatically added to the end of the base url when creating the request.
 #' @param api_secret API secret or token as entered when accessing the base URL via a web browser. This API secret is hashed using Secure Hash Algorithm 1 prior to appending to header of API request.
@@ -87,6 +89,7 @@ make_request <- function(url = NULL, api_secret = NULL, schema = "entries", spec
 #'
 #' @return A list of HTTP responses: a list of S3 lists with class httr2_request.
 #' @import httr2
+#' @export
 #'
 #' @examples
 #' \dontrun{

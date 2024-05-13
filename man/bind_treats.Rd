@@ -7,7 +7,7 @@
 bind_treats(ls_treats)
 }
 \arguments{
-\item{ls_treats}{}
+\item{ls_treats}{List of treatments retrieved as json objects}
 }
 \description{
 Tidy and combine a list of treatment json objects
