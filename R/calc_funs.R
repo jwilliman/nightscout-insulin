@@ -70,7 +70,7 @@ calc_basal <- function(dat_profile, dat_treats) {
     absolute = base)]
   
   ## Drop changes in base where they occur in the middle of a temporary basal
-  dat_tb2[, absolute := tidytable::ifelse.(
+  dat_tb2[, absolute := tidytable::if_else(
     type == "base" & shift(type, type = "lag") %in% "temp",
     shift(absolute, type = "lag"), absolute)]
   
@@ -141,7 +141,7 @@ calc_bolus <- function(dat_treats)  {
   dat_bolus_long <- data.table::groupingsets(
     dat_bolus[
       , .(insulin = sum(insulin))
-      , by = .(date, eventType = ifelse(
+      , by = .(date, eventType = tidytable::if_else(
         isSMB %in% TRUE, paste0(eventType, " - SMB"), eventType))],
     j = list(insulin = sum(insulin)), by = c("date", "eventType"),
     sets = list(c("date", "eventType"), c("date")))[

@@ -8,7 +8,6 @@
 #' @return  A list of maximum length 2, with expressions to use in later functions like `make_request`.
 #' @export
 #'
-#' @examples
 find_between <- function(x = "dateString", lower = NULL, upper = NULL, inc.bounds = TRUE) {
   
   if(inc.bounds == TRUE)
